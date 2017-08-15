@@ -2,10 +2,8 @@
 
 
 
-  
 
-
-<html class="theme-next mist use-motion" lang="zh-Hans">
+<html class="theme-next mist" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -78,7 +76,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="iOS," />
 
 
 
@@ -102,7 +100,7 @@ nonatomic表示非线程安全，修饰的实例变量可以同时被多个线�
 <meta property="og:site_name" content="17's Blog">
 <meta property="og:description" content="1.atomic &amp;amp; nonatomic多线程相关，指定属性的读取操作是否为原子操作，即是否线程安全。atomic为默认选项，表示线程安全，至少在当前的存取器上是安全的，意味着同一时间只能有一个线程访问实例变量。线程安全涉及到加锁机制，会消耗大量资源损耗性能，所以效率会比较低。
 nonatomic表示非线程安全，修饰的实例变量可以同时被多个线程访问。跟atomic相比，效率比较高，可以提高">
-<meta property="og:updated_time" content="2017-08-15T09:23:55.000Z">
+<meta property="og:updated_time" content="2017-08-15T12:55:20.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS 基础(1)- Property 修饰符">
 <meta name="twitter:description" content="1.atomic &amp;amp; nonatomic多线程相关，指定属性的读取操作是否为原子操作，即是否线程安全。atomic为默认选项，表示线程安全，至少在当前的存取器上是安全的，意味着同一时间只能有一个线程访问实例变量。线程安全涉及到加锁机制，会消耗大量资源损耗性能，所以效率会比较低。
@@ -118,7 +116,7 @@ nonatomic表示非线程安全，修饰的实例变量可以同时被多个线�
     sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
     tabs: true,
-    motion: true,
+    motion: false,
     duoshuo: {
       userId: '0',
       author: '博主'
@@ -359,6 +357,12 @@ nonatomic表示非线程安全，修饰的实例变量可以同时被多个线�
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
 
       
       
@@ -465,10 +469,10 @@ nonatomic表示非线程安全，修饰的实例变量可以同时被多个线�
             
             
             <div class="site-state-item site-state-tags">
-              
-                <span class="site-state-item-count">1</span>
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">2</span>
                 <span class="site-state-item-name">标签</span>
-              
+              </a>
             </div>
           
 
