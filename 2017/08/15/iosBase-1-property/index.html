@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next mist" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="iOS," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="1.atomic &amp;amp; nonatomic多线程相关，指定属性的读取操作是否为原子操作，即是否线程安全。atomic为默认选项，表示线程安全，至少在当前的存取器上是安全的，意味着同一时间只能有一个线程访问实例变量。线程安全涉及到加锁机制，会消耗大量资源损耗性能，所以效率会比较低。
+nonatomic表示非线程安全，修饰的实例变量可以同时被多个线程访问。跟atomic相比，效率比较高，可以提高">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 基础(1)- Property 修饰符">
+<meta property="og:url" content="http://yoursite.com/2017/08/15/iosBase-1-property/index.html">
+<meta property="og:site_name" content="17's Blog">
+<meta property="og:description" content="1.atomic &amp;amp; nonatomic多线程相关，指定属性的读取操作是否为原子操作，即是否线程安全。atomic为默认选项，表示线程安全，至少在当前的存取器上是安全的，意味着同一时间只能有一个线程访问实例变量。线程安全涉及到加锁机制，会消耗大量资源损耗性能，所以效率会比较低。
+nonatomic表示非线程安全，修饰的实例变量可以同时被多个线程访问。跟atomic相比，效率比较高，可以提高">
+<meta property="og:updated_time" content="2017-08-15T12:55:20.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 基础(1)- Property 修饰符">
+<meta name="twitter:description" content="1.atomic &amp;amp; nonatomic多线程相关，指定属性的读取操作是否为原子操作，即是否线程安全。atomic为默认选项，表示线程安全，至少在当前的存取器上是安全的，意味着同一时间只能有一个线程访问实例变量。线程安全涉及到加锁机制，会消耗大量资源损耗性能，所以效率会比较低。
+nonatomic表示非线程安全，修饰的实例变量可以同时被多个线程访问。跟atomic相比，效率比较高，可以提高">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: false,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/15/iosBase-1-property/"/>
+
+
+
+
+
+  <title>iOS 基础(1)- Property 修饰符 | 17's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">17's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">一样生，百样活</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/15/iosBase-1-property/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="莫十七">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="17's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS 基础(1)- Property 修饰符</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-15T17:19:11+08:00">
+                2017-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="1-atomic-amp-nonatomic"><a href="#1-atomic-amp-nonatomic" class="headerlink" title="1.atomic &amp; nonatomic"></a>1.atomic &amp; nonatomic</h3><p><strong>多线程相关</strong>，指定属性的读取操作是否为原子操作，即是否线程安全。<br><code>atomic</code>为默认选项，表示线程安全，至少在当前的存取器上是安全的，意味着同一时间只能有一个线程访问实例变量。线程安全涉及到加锁机制，会消耗大量资源损耗性能，所以效率会比较低。</p>
+<p><code>nonatomic</code>表示非线程安全，修饰的实例变量可以同时被多个线程访问。跟<code>atomic</code>相比，效率比较高，可以提高访问性能。适合内存比较小的移动设备。</p>
+<h3 id="2-readwrite-amp-readonly"><a href="#2-readwrite-amp-readonly" class="headerlink" title="2. readwrite &amp; readonly"></a>2. readwrite &amp; readonly</h3><p><strong>存取器控制</strong>，<br><code>readwrite</code>：<strong>默认选项</strong>，表示属性同时拥有同时拥有<code>setter</code>方法和<code>getter</code>方法。<br><code>readonly</code>：表示属性只拥有<code>getter</code>方法，没有<code>setter</code>方法。</p>
+<h3 id="3-strong-amp-weak"><a href="#3-strong-amp-weak" class="headerlink" title="3. strong &amp; weak"></a>3. strong &amp; weak</h3><p>在 ARC 下用于属性的内存管理，用来修饰对象，不能用来修饰基本的值数据类型，如<code>int</code>，<code>float</code>等。</p>
+<p><code>strong</code>：表示一种拥有关系，属性和所赋的值之间是强引用关系。赋值时，先保留新值，增加新值的引用计数，然后再释放旧值减少旧值的引用计数。<code>strong</code>用来修饰对象，不用修饰基本的值数据类型。</p>
+<p><code>weak</code>表示一种非拥有关系，属性和所赋的值之间是弱引用的关系。赋值时，不会增加新值的引用计数，也不减少旧值的引用计数。<code>weak</code>声明的属性在引用计数减少为 0 被释放后，会自动设置为 nil，避免野指针的错误。<br><code>weak</code>常被用在<code>delegate</code>等容易出现循环引用的场景。</p>
+<h3 id="4-retain"><a href="#4-retain" class="headerlink" title="4. retain"></a>4. retain</h3><p>在 MRC 下用于属性的内存管理，和<code>strong</code>的用法一致。</p>
+<h3 id="5-assign"><a href="#5-assign" class="headerlink" title="5. assign"></a>5. assign</h3><p><code>assign</code>表示单纯的复制（值复制），赋值时，不会更改新值和旧值的引用计数。用于值类型，如<code>int</code>,<code>float</code>,<code>double</code>和<code>NSInteger</code>，<code>CGFloat</code>等，还包括不存在所有权关系的对象，如常见的<code>delegate</code>。</p>
+<p><code>assign</code>也可以用来修饰对象，如<code>NSString</code>等类型对象，由于在赋值过程中没有改变新值以及旧值的引用计数，所以当新值的引用计数为 0 时，编译器不会将该属性置为<code>nil</code>，指针还会指向之前被销毁的内存，这时访问该属性会产生野指针错误并崩溃，因此使用<code>assign</code>修饰的类型一定要为值类型。</p>
+<h3 id="6-copy"><a href="#6-copy" class="headerlink" title="6. copy"></a>6. copy</h3><p><code>copy</code>修饰的对象，与<code>strong</code>相同，都是强引用关系，不同的是，赋值时<code>copy</code>修饰的属性不会保留新值，而是将新值在内存中拷贝了一份。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">@interface ViewController ()</div><div class="line"></div><div class="line">@property (nonatomic, copy) NSString *str;</div><div class="line"></div><div class="line">@end</div><div class="line">@implementation ViewController</div><div class="line"></div><div class="line">- (void)viewDidLoad &#123;</div><div class="line">    [super viewDidLoad];</div><div class="line">    </div><div class="line">    NSString *str2 = @&quot;I&apos;m A&quot;;</div><div class="line">    self.str = str2;</div><div class="line">    str2 = @&quot;I&apos;m B&quot;;</div><div class="line">    [str2 valueForKey:@&quot;retainCount&quot;];</div><div class="line">    OBJC_EXTERN int _objc_rootRetainCount(id);</div><div class="line">    </div><div class="line">    NSLog(@&quot;result:str:%@, str2:%@, str2 retainCount:%d&quot;, self.str, str2, _objc_rootRetainCount(str2));</div><div class="line">&#125;</div><div class="line"></div><div class="line">@end</div></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">result:str:I&apos;m A, str2:I&apos;m B, str2 retainCount:1</div></pre></td></tr></table></figure>
+<p>如以上代码所示：</p>
+<ol>
+<li>str2 的值改变时，不会影响属性 str，可见<code>self.str = str2</code>赋值语句只是将 str2 值的副本赋给了属性 str，两者指针不同。</li>
+<li>str2 的引用计数为1，可见赋值语句没有改变 str2 的引用计数。</li>
+</ol>
+<p>因为<code>NSString</code>、<code>NSArray</code>、<code>NSDictionary</code>有对应的可变类型<code>NSMutableString</code>、<code>NSMutableArray</code>、<code>NSMutableDictionary</code>，为了确保对象不会在无意间发生变动，这些对象多使用<code>copy</code>关键字。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/12/git-order/" rel="next" title="Git 的基本命令">
+                <i class="fa fa-chevron-left"></i> Git 的基本命令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="莫十七" />
+          <p class="site-author-name" itemprop="name">莫十七</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-atomic-amp-nonatomic"><span class="nav-number">1.</span> <span class="nav-text">1.atomic & nonatomic</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-readwrite-amp-readonly"><span class="nav-number">2.</span> <span class="nav-text">2. readwrite & readonly</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-strong-amp-weak"><span class="nav-number">3.</span> <span class="nav-text">3. strong & weak</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-retain"><span class="nav-number">4.</span> <span class="nav-text">4. retain</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-assign"><span class="nav-number">5.</span> <span class="nav-text">5. assign</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-copy"><span class="nav-number">6.</span> <span class="nav-text">6. copy</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莫十七</span>
+
+  
+</div>
+
+
+  <div class="powered-by">
+    由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+  </div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">
+    主题 &mdash;
+    <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+      NexT.Mist
+    </a>
+  </div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
